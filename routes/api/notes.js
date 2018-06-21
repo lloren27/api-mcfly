@@ -17,7 +17,19 @@ router.get('/notes/:id', (req, res, next) => {
 
     return res.json(entry);
   });
+
 });
+router.post("/selectFavourite/:id", (req, res, next) => {
+    const EntryId = req.params.id;
+    const update1 = {
+        favourite: "Yes"
+    }
+    Entry.findByIdAndUpdate(EntryId, update1).then(entry => {
+        entry.favourite = update1.favorite
+        console.log("yes", favorite)
+        return res.json(`Esta entrada a sido marcada como favorita`)
+    })
+})
 
 router.post('/notes', (req, res, next) => {
   const newEntry = new Entry({
