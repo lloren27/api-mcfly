@@ -1,46 +1,58 @@
 const express       = require('express');
 const router        = express.Router();
-const Entry         = require('../../models/notes');
+const Note         = require('../../models/notes');
 
 router.get('/notes', (req, res, next) => {
-  Entry.find({}, (err, entries) => {
+  Note.find({}, (err, notes) => {
     if (err) { return res.json(err).status(500); }
 
-    return res.json(entries);
+    return res.json(notes);
   });
 });
 
 router.get('/notes/:id', (req, res, next) => {
-  Entry.findById(req.params.id, (err, entry) => {
+  Note.findById(req.params.id, (err, notes) => {
     if (err)    { return res.json(err).status(500); }
-    if (!entry) { return res.json(err).status(404); }
+    if (!notes) { return res.json(err).status(404); }
 
-    return res.json(entry);
+    return res.json(notes);
   });
 
 });
 router.post("/selectFavourite/:id", (req, res, next) => {
-    const EntryId = req.params.id;
+    const NotesId = req.params.id;
     const update1 = {
         favourite: "Yes"
     }
-    Entry.findByIdAndUpdate(EntryId, update1).then(entry => {
-        entry.favourite = update1.favorite
+    Note.findByIdAndUpdate(NotesId, update1).then(note => {
+        note.favourite = update1.favorite
         console.log("yes", favorite)
-        return res.json(`Esta entrada a sido marcada como favorita`)
+        return res.json(`Esta nota a sido marcada como favorita`)
     })
 })
+router.get('/favourites', (req, res) => {
+  Note.find({
+      favourite: "Yes"
+    })
+    .then(favourites => {
+      console.log(favourites)
+      return res.status(200).json(favourites);
+    })
+
+  })
 
 router.post('/notes', (req, res, next) => {
-  const newEntry = new Entry({
+  const newNote = new Note({
     title: req.body.title,
     content: req.body.content
   });
 
-  newEntry.save( (err) => {
-    if (err)             { return res.status(500).json(err) }
-    if (newEntry.errors) { return res.status(400).json(newEntry) }
-                           return res.json(newEntry);
+  newNote.save( (err) => {
+    if (err){
+      return res.status(500).json(err)}
+    if (newNote.errors) {
+      return res.status(400).json(newNote)}
+    return res.json(newNote);
   });
 });
 
