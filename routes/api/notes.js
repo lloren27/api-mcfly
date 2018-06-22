@@ -21,14 +21,13 @@ router.get('/notes/:id', (req, res, next) => {
 });
 router.post("/selectFavourite/:id", (req, res, next) => {
     const NotesId = req.params.id;
-    const update1 = {
+    const update = {
         favourite: "Yes"
     }
-    Note.findByIdAndUpdate(NotesId, update1).then(note => {
-        note.favourite = update1.favorite
-        console.log("yes", favorite)
+    Note.findByIdAndUpdate(NotesId, update).then(note => {
+        note.favourite = update.favourite
         return res.json(`Esta nota a sido marcada como favorita`)
-    })
+    }).catch(e => console.log(e))
 })
 router.get('/favourites', (req, res) => {
   Note.find({
@@ -41,7 +40,7 @@ router.get('/favourites', (req, res) => {
 
   })
 
-router.post('/notes', (req, res, next) => {
+router.post('/newNotes', (req, res, next) => {
   const newNote = new Note({
     title: req.body.title,
     content: req.body.content
